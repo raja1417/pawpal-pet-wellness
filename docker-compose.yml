@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-pawpal}
+      POSTGRES_USER: ${POSTGRES_USER:-pawpal}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-pawpal-only}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pawpal}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: ./server
+      target: development
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-pawpal}:${POSTGRES_PASSWORD:-local-pawpal-only}@postgres:5432/${POSTGRES_DB:-pawpal}?schema=public
+      JWT_SECRET: local-development-secret-change-me
+      CORS_ORIGIN: http://localhost:5173
+    command: sh -c "npx prisma migrate deploy && npm run seed && npm run dev"
+    volumes:
+      - ./server/src:/app/src
+      - ./server/prisma:/app/prisma
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./web
+      target: development
+    environment:
+      VITE_API_URL: http://localhost:3000/api
+    command: npm run dev -- --host 0.0.0.0
+    volumes:
+      - ./web/src:/app/src
+      - ./web/index.html:/app/index.html
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api
+
+volumes:
+  postgres-data:

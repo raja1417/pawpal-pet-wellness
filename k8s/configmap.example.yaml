@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pawpal-config
+  namespace: pawpal
+data:
+  NODE_ENV: production
+  PORT: "3000"
+  CORS_ORIGIN: https://pawpal.example.com
+  LOG_LEVEL: info

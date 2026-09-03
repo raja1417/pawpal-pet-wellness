@@ -1,0 +1,10 @@
+PawPal is installed.
+{{- if .Values.ingress.enabled }}
+URL: {{ ternary "https" "http" .Values.ingress.tls.enabled }}://{{ .Values.ingress.host }}
+{{- else }}
+Run:
+  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "pawpal.fullname" . }}-web 8080:{{ .Values.web.service.port }}
+Then open http://localhost:8080.
+{{- end }}
+
+Before the first API rollout, apply the Prisma migrations against the configured database.

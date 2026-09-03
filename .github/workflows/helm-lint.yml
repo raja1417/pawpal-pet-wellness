@@ -1,0 +1,28 @@
+name: Helm
+
+on:
+  pull_request:
+    paths: ["charts/**", ".github/workflows/helm-lint.yml"]
+  push:
+    branches: [main]
+    paths: ["charts/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: azure/setup-helm@v4.3.1
+        with:
+          version: v3.16.4
+      - run: helm dependency build charts/pawpal
+      - run: helm lint charts/pawpal
+      - run: helm template pawpal charts/pawpal --namespace pawpal > rendered.yaml
+      - uses: yannh/kubeconform-action@v0.6.7
+        with:
+          input: rendered.yaml
+          strict: "true"
+          summary: "true"
