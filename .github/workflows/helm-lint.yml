@@ -21,8 +21,8 @@ jobs:
       - run: helm dependency build charts/pawpal
       - run: helm lint charts/pawpal
       - run: helm template pawpal charts/pawpal --namespace pawpal > rendered.yaml
-      - uses: yannh/kubeconform-action@v0.6.7
-        with:
-          input: rendered.yaml
-          strict: "true"
-          summary: "true"
+      - name: Install kubeconform
+        run: |
+          curl -sSL https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz | tar -xz kubeconform
+          sudo mv kubeconform /usr/local/bin/kubeconform
+      - run: kubeconform -strict -summary rendered.yaml
