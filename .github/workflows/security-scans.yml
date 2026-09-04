@@ -12,12 +12,12 @@ permissions:
 
 jobs:
   tfsec:
-    uses: raja1417/github-actions-workflows/.github/workflows/tfsec-scan.yml@v1
+    uses: raja1417/github-actions-workflows/.github/workflows/tfsec-scan.yml@46f7f73286ef3fbd947e8f317c2b88262cf3c6af
     with:
       working-directory: infrastructure
 
   checkov:
-    uses: raja1417/github-actions-workflows/.github/workflows/checkov-scan.yml@v1
+    uses: raja1417/github-actions-workflows/.github/workflows/checkov-scan.yml@46f7f73286ef3fbd947e8f317c2b88262cf3c6af
     with:
       directory: infrastructure
       framework: terraform

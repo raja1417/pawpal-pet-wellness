@@ -11,13 +11,13 @@ permissions:
 
 jobs:
   dev:
-    uses: raja1417/github-actions-workflows/.github/workflows/helm-validate.yml@v1
+    uses: raja1417/github-actions-workflows/.github/workflows/helm-validate.yml@46f7f73286ef3fbd947e8f317c2b88262cf3c6af
     with:
       chart-path: charts/pawpal
       values-file: values-dev.yaml
 
   prod:
-    uses: raja1417/github-actions-workflows/.github/workflows/helm-validate.yml@v1
+    uses: raja1417/github-actions-workflows/.github/workflows/helm-validate.yml@46f7f73286ef3fbd947e8f317c2b88262cf3c6af
     with:
       chart-path: charts/pawpal
       values-file: values-prod.yaml

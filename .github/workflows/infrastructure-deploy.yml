@@ -27,7 +27,7 @@ permissions:
 jobs:
   plan:
     if: ${{ github.event_name == 'push' || inputs.action == 'apply' }}
-    uses: raja1417/github-actions-workflows/.github/workflows/terraform-plan.yml@v1
+    uses: raja1417/github-actions-workflows/.github/workflows/terraform-plan.yml@46f7f73286ef3fbd947e8f317c2b88262cf3c6af
     with:
       working-directory: infrastructure
       init-args: >-
@@ -41,7 +41,7 @@ jobs:
   apply:
     needs: plan
     if: ${{ github.event_name == 'push' || inputs.action == 'apply' }}
-    uses: raja1417/github-actions-workflows/.github/workflows/terraform-apply.yml@v1
+    uses: raja1417/github-actions-workflows/.github/workflows/terraform-apply.yml@46f7f73286ef3fbd947e8f317c2b88262cf3c6af
     with:
       working-directory: infrastructure
       init-args: >-
@@ -56,7 +56,7 @@ jobs:
 
   destroy:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.action == 'destroy' }}
-    uses: raja1417/github-actions-workflows/.github/workflows/terraform-destroy.yml@v1
+    uses: raja1417/github-actions-workflows/.github/workflows/terraform-destroy.yml@46f7f73286ef3fbd947e8f317c2b88262cf3c6af
     with:
       working-directory: infrastructure
       init-args: >-

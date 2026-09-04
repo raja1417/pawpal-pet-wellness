@@ -84,7 +84,7 @@ Images are published with `latest`, branch, commit SHA, and release semver tags.
 
 ### AWS infrastructure
 
-The `infrastructure` wrapper provisions a two-AZ VPC, EKS, managed PostgreSQL, private S3 storage, security groups, and an ALB using `raja1417/terraform-modules` release `v1.0.0`.
+The `infrastructure` wrapper provisions a two-AZ VPC, EKS, managed PostgreSQL, private S3 storage, security groups, and an ALB using an immutable `raja1417/terraform-modules` revision.
 
 Create the backend S3 bucket and DynamoDB lock table before the first run. Then initialize with an environment-specific key and apply the matching values:
 
@@ -93,8 +93,8 @@ terraform -chdir=infrastructure init \
   -backend-config="bucket=pawpal-terraform-state" \
   -backend-config="key=pawpal/dev/terraform.tfstate" \
   -backend-config="region=us-east-1"
-terraform -chdir=infrastructure plan -var-file=dev.tfvars
-terraform -chdir=infrastructure apply
+terraform -chdir=infrastructure plan -var-file=dev.tfvars -out=tfplan
+terraform -chdir=infrastructure apply tfplan
 ```
 
 Use `prod.tfvars` and `pawpal/prod/terraform.tfstate` for production. RDS manages its master password in AWS Secrets Manager; create the `pawpal-prod-secrets` Kubernetes secret with `database-url` and `jwt-secret` keys before deployment.
@@ -110,7 +110,7 @@ Configure these repository variables:
 | `AWS_REGION` | `us-east-1` |
 | `TF_BACKEND_BUCKET` | `pawpal-terraform-state` |
 
-Configure `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `KUBECONFIG_DEV` in the `dev` environment. Configure the AWS credentials and `KUBECONFIG_PROD` in the `production` environment, and enable required reviewers there. The reusable callers require the `v1` release of `raja1417/github-actions-workflows`, and the Terraform wrapper requires the `v1.0.0` release of `raja1417/terraform-modules`.
+Configure `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `KUBECONFIG_DEV` in the `dev` environment. Configure the AWS credentials and `KUBECONFIG_PROD` in the `production` environment, and enable required reviewers there. Shared modules and workflows are pinned to immutable revisions; move those pins to the documented `v1.0.0` and `v1` release tags once those tags are published upstream.
 
 The API deployment runs `npx prisma migrate deploy` in an init container before each rollout. Development creates and preserves chart-managed credentials; production always consumes the pre-created secret.
 

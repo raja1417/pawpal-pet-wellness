@@ -39,6 +39,9 @@ spec:
           resources:
             requests: { cpu: 50m, memory: 64Mi }
             limits: { cpu: 250m, memory: 256Mi }
+          volumeMounts:
+            - name: migration-tmp
+              mountPath: /tmp
       containers:
         - name: api
           image: {{ include "pawpal.apiImage" . | quote }}
@@ -72,6 +75,9 @@ spec:
             periodSeconds: 20
           resources:
             {{- toYaml .Values.api.resources | nindent 12 }}
+      volumes:
+        - name: migration-tmp
+          emptyDir: {}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}

@@ -20,7 +20,7 @@ provider "aws" {
 data "aws_caller_identity" "current" {}
 
 module "vpc" {
-  source = "git::https://github.com/raja1417/terraform-modules.git//aws/vpc?ref=v1.0.0"
+  source = "git::https://github.com/raja1417/terraform-modules.git//aws/vpc?ref=368a0e709a8829885f1ebda6572eb72d22486811"
 
   name               = local.name_prefix
   cidr_block         = "10.0.0.0/16"
@@ -51,7 +51,7 @@ module "vpc" {
 }
 
 module "alb_security_group" {
-  source = "git::https://github.com/raja1417/terraform-modules.git//aws/security-group?ref=v1.0.0"
+  source = "git::https://github.com/raja1417/terraform-modules.git//aws/security-group?ref=368a0e709a8829885f1ebda6572eb72d22486811"
 
   name   = "${local.name_prefix}-alb"
   vpc_id = module.vpc.vpc_id
@@ -75,7 +75,7 @@ module "alb_security_group" {
 }
 
 module "eks_security_group" {
-  source = "git::https://github.com/raja1417/terraform-modules.git//aws/security-group?ref=v1.0.0"
+  source = "git::https://github.com/raja1417/terraform-modules.git//aws/security-group?ref=368a0e709a8829885f1ebda6572eb72d22486811"
 
   name   = "${local.name_prefix}-eks"
   vpc_id = module.vpc.vpc_id
@@ -99,7 +99,7 @@ module "eks_security_group" {
 }
 
 module "rds_security_group" {
-  source = "git::https://github.com/raja1417/terraform-modules.git//aws/security-group?ref=v1.0.0"
+  source = "git::https://github.com/raja1417/terraform-modules.git//aws/security-group?ref=368a0e709a8829885f1ebda6572eb72d22486811"
 
   name   = "${local.name_prefix}-rds"
   vpc_id = module.vpc.vpc_id
@@ -154,7 +154,7 @@ resource "aws_iam_role_policy_attachment" "eks_nodes" {
 }
 
 module "eks" {
-  source = "git::https://github.com/raja1417/terraform-modules.git//aws/eks?ref=v1.0.0"
+  source = "git::https://github.com/raja1417/terraform-modules.git//aws/eks?ref=368a0e709a8829885f1ebda6572eb72d22486811"
 
   name                   = local.name_prefix
   cluster_role_arn       = aws_iam_role.eks_cluster.arn
@@ -164,12 +164,12 @@ module "eks" {
   endpoint_public_access = true
   node_groups = {
     application = {
-      subnet_ids    = module.vpc.private_subnet_ids
+      subnet_ids     = module.vpc.private_subnet_ids
       instance_types = ["t3.medium"]
-      desired_size  = var.instance_count
-      min_size      = var.environment == "prod" ? 3 : 1
-      max_size      = var.environment == "prod" ? 6 : 2
-      disk_size     = 30
+      desired_size   = var.instance_count
+      min_size       = var.environment == "prod" ? 3 : 1
+      max_size       = var.environment == "prod" ? 6 : 2
+      disk_size      = 30
     }
   }
   addons = {
@@ -186,29 +186,29 @@ module "eks" {
 }
 
 module "rds" {
-  source = "git::https://github.com/raja1417/terraform-modules.git//aws/rds?ref=v1.0.0"
+  source = "git::https://github.com/raja1417/terraform-modules.git//aws/rds?ref=368a0e709a8829885f1ebda6572eb72d22486811"
 
-  name                           = "${local.name_prefix}-postgres"
-  engine                         = "postgres"
-  instance_class                 = var.db_size
-  allocated_storage              = var.db_storage
-  max_allocated_storage          = var.db_storage * 5
-  db_name                        = "pawpal"
-  username                       = "pawpal_admin"
-  manage_master_user_password    = true
-  subnet_ids                     = module.vpc.private_subnet_ids
-  vpc_security_group_ids         = [module.rds_security_group.id]
-  backup_retention_period        = var.environment == "prod" ? 30 : 7
-  multi_az                       = var.environment == "prod"
-  deletion_protection            = var.environment == "prod"
-  skip_final_snapshot            = var.environment != "prod"
-  performance_insights_enabled   = var.environment == "prod"
+  name                            = "${local.name_prefix}-postgres"
+  engine                          = "postgres"
+  instance_class                  = var.db_size
+  allocated_storage               = var.db_storage
+  max_allocated_storage           = var.db_storage * 5
+  db_name                         = "pawpal"
+  username                        = "pawpal_admin"
+  manage_master_user_password     = true
+  subnet_ids                      = module.vpc.private_subnet_ids
+  vpc_security_group_ids          = [module.rds_security_group.id]
+  backup_retention_period         = var.environment == "prod" ? 30 : 7
+  multi_az                        = var.environment == "prod"
+  deletion_protection             = var.environment == "prod"
+  skip_final_snapshot             = var.environment != "prod"
+  performance_insights_enabled    = var.environment == "prod"
   enabled_cloudwatch_logs_exports = ["postgresql"]
-  tags                           = local.common_tags
+  tags                            = local.common_tags
 }
 
 module "app_data" {
-  source = "git::https://github.com/raja1417/terraform-modules.git//aws/s3?ref=v1.0.0"
+  source = "git::https://github.com/raja1417/terraform-modules.git//aws/s3?ref=368a0e709a8829885f1ebda6572eb72d22486811"
 
   name          = "${local.name_prefix}-${data.aws_caller_identity.current.account_id}-data"
   force_destroy = var.environment != "prod"
@@ -224,7 +224,7 @@ module "app_data" {
 }
 
 module "alb" {
-  source = "git::https://github.com/raja1417/terraform-modules.git//aws/alb?ref=v1.0.0"
+  source = "git::https://github.com/raja1417/terraform-modules.git//aws/alb?ref=368a0e709a8829885f1ebda6572eb72d22486811"
 
   name                       = substr(local.name_prefix, 0, 32)
   security_group_ids         = [module.alb_security_group.id]

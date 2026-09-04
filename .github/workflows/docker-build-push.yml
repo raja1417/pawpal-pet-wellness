@@ -41,7 +41,7 @@ jobs:
 
   api:
     needs: tags
-    uses: raja1417/github-actions-workflows/.github/workflows/docker-build-push.yml@v1
+    uses: raja1417/github-actions-workflows/.github/workflows/docker-build-push.yml@46f7f73286ef3fbd947e8f317c2b88262cf3c6af
     with:
       image: ghcr.io/raja1417/pawpal-api
       context: server
@@ -56,7 +56,7 @@ jobs:
 
   web:
     needs: tags
-    uses: raja1417/github-actions-workflows/.github/workflows/docker-build-push.yml@v1
+    uses: raja1417/github-actions-workflows/.github/workflows/docker-build-push.yml@46f7f73286ef3fbd947e8f317c2b88262cf3c6af
     with:
       image: ghcr.io/raja1417/pawpal-web
       context: web

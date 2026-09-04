@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY prisma ./prisma
-RUN npx prisma generate
+RUN ./node_modules/.bin/prisma generate
 COPY tsconfig*.json .eslintrc.json ./
 COPY src ./src
 EXPOSE 3000
