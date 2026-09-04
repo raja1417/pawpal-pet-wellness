@@ -1,13 +1,16 @@
 nameOverride: ""
 fullnameOverride: ""
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: ghcr-pull-secret
+namespace: ""
 
 api:
   replicaCount: 2
   image:
-    repository: ghcr.io/raja1417/pawpal-pet-wellness-api
+    repository: ghcr.io/raja1417/pawpal-api
     tag: latest
+    digest: ""
     pullPolicy: IfNotPresent
   service:
     port: 3000
@@ -23,8 +26,9 @@ api:
 web:
   replicaCount: 2
   image:
-    repository: ghcr.io/raja1417/pawpal-pet-wellness-web
+    repository: ghcr.io/raja1417/pawpal-web
     tag: latest
+    digest: ""
     pullPolicy: IfNotPresent
   service:
     port: 80
@@ -40,7 +44,7 @@ web:
 
 config:
   nodeEnv: production
-  corsOrigin: https://pawpal.example.com
+  corsOrigin: ""
   logLevel: info
 
 secrets:
@@ -55,7 +59,7 @@ ingress:
   enabled: true
   className: nginx
   annotations: {}
-  host: pawpal.example.com
+  host: ""
   tls:
     enabled: true
     secretName: pawpal-tls

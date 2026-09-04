@@ -7,5 +7,5 @@ metadata:
 data:
   NODE_ENV: {{ .Values.config.nodeEnv | quote }}
   PORT: {{ .Values.api.service.port | quote }}
-  CORS_ORIGIN: {{ .Values.config.corsOrigin | quote }}
+  CORS_ORIGIN: {{ default (printf "https://%s" .Values.ingress.host) .Values.config.corsOrigin | quote }}
   LOG_LEVEL: {{ .Values.config.logLevel | quote }}

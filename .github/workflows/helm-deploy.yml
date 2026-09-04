@@ -1,0 +1,42 @@
+name: Deploy PawPal
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Deployment environment
+        required: true
+        type: choice
+        options: [staging, production]
+        default: staging
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  deploy-dev:
+    if: ${{ github.event_name == 'push' || inputs.environment == 'staging' }}
+    uses: raja1417/github-actions-workflows/.github/workflows/helm-deploy.yml@46f7f73286ef3fbd947e8f317c2b88262cf3c6af
+    with:
+      release-name: pawpal
+      chart-path: charts/pawpal
+      namespace: pawpal-dev
+      values-file: values-dev.yaml
+      environment: dev
+    secrets:
+      kubeconfig: ${{ secrets.KUBECONFIG_DEV }}
+
+  deploy-production:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.environment == 'production' }}
+    uses: raja1417/github-actions-workflows/.github/workflows/helm-deploy.yml@46f7f73286ef3fbd947e8f317c2b88262cf3c6af
+    with:
+      release-name: pawpal
+      chart-path: charts/pawpal
+      namespace: pawpal-prod
+      values-file: values-prod.yaml
+      environment: production
+    secrets:
+      kubeconfig: ${{ secrets.KUBECONFIG_PROD }}

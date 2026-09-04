@@ -1,17 +1,30 @@
+namespace: pawpal-prod
 api:
   replicaCount: 3
   autoscaling:
+    enabled: true
     minReplicas: 3
     maxReplicas: 10
+  resources:
+    requests: { cpu: 250m, memory: 256Mi }
+    limits: { cpu: "1", memory: 1Gi }
 web:
   replicaCount: 3
   autoscaling:
+    enabled: true
     minReplicas: 3
     maxReplicas: 10
+  resources:
+    requests: { cpu: 100m, memory: 128Mi }
+    limits: { cpu: 500m, memory: 512Mi }
 ingress:
+  host: pawpal.example.com
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 config:
   nodeEnv: production
 postgresql:
   enabled: false
+secrets:
+  create: false
+  existingSecret: pawpal-prod-secrets

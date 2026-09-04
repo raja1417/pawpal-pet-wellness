@@ -24,5 +24,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "pawpal.secretName" -}}
-{{- if .Values.secrets.create }}{{ include "pawpal.fullname" . }}{{ else }}{{ required "secrets.existingSecret is required when secrets.create=false" .Values.secrets.existingSecret }}{{ end }}
+{{- default (include "pawpal.fullname" .) .Values.secrets.existingSecret }}
+{{- end }}
+
+{{- define "pawpal.apiImage" -}}
+{{- if .Values.api.image.digest }}{{ printf "%s@%s" .Values.api.image.repository .Values.api.image.digest }}{{ else }}{{ printf "%s:%s" .Values.api.image.repository .Values.api.image.tag }}{{ end }}
+{{- end }}
+
+{{- define "pawpal.webImage" -}}
+{{- if .Values.web.image.digest }}{{ printf "%s@%s" .Values.web.image.repository .Values.web.image.digest }}{{ else }}{{ printf "%s:%s" .Values.web.image.repository .Values.web.image.tag }}{{ end }}
 {{- end }}
