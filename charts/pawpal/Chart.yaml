@@ -1,0 +1,12 @@
+apiVersion: v2
+name: pawpal
+description: PawPal pet care and wellness web application
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+kubeVersion: ">=1.25.0-0"
+dependencies:
+  - name: postgresql
+    version: "15.5.38"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled

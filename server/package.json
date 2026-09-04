@@ -1,0 +1,50 @@
+{
+  "name": "pawpal-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/src/index.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"{src,tests,prisma}/**/*.ts\"",
+    "test": "jest --runInBand",
+    "test:coverage": "jest --coverage --runInBand",
+    "prisma:migrate": "prisma migrate dev",
+    "seed": "prisma db seed"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "5.22.0",
+    "bcryptjs": "2.4.3",
+    "cors": "2.8.5",
+    "express": "5.2.1",
+    "express-rate-limit": "7.5.0",
+    "helmet": "8.0.0",
+    "jsonwebtoken": "9.0.2",
+    "pino": "9.6.0",
+    "pino-http": "10.4.0",
+    "zod": "3.24.2"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "2.4.6",
+    "@types/cors": "2.8.17",
+    "@types/express": "4.17.21",
+    "@types/jest": "29.5.14",
+    "@types/jsonwebtoken": "9.0.7",
+    "@types/node": "22.10.7",
+    "@types/supertest": "6.0.2",
+    "@typescript-eslint/eslint-plugin": "8.21.0",
+    "@typescript-eslint/parser": "8.21.0",
+    "eslint": "8.57.1",
+    "jest": "29.7.0",
+    "prisma": "5.22.0",
+    "supertest": "7.1.4",
+    "ts-jest": "29.2.5",
+    "tsx": "4.23.13",
+    "typescript": "5.7.3"
+  }
+}
