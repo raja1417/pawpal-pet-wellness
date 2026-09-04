@@ -146,3 +146,10 @@ vite.config.ts.timestamp-*
 server/.env
 web/.env
 *.local
+
+# Terraform working data and state
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan.json

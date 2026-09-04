@@ -1,0 +1,29 @@
+name: Terraform pull request
+
+on:
+  pull_request:
+    paths:
+      - "infrastructure/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate:
+    uses: raja1417/github-actions-workflows/.github/workflows/terraform-validate.yml@v1
+    with:
+      working-directory: infrastructure
+
+  plan:
+    needs: validate
+    uses: raja1417/github-actions-workflows/.github/workflows/terraform-plan.yml@v1
+    with:
+      working-directory: infrastructure
+      init-args: >-
+        -input=false
+        -backend-config=bucket=${{ vars.TF_BACKEND_BUCKET }}
+        -backend-config=key=pawpal/dev/terraform.tfstate
+        -backend-config=region=${{ vars.AWS_REGION }}
+      artifact-name: pawpal-plan
+    secrets: inherit

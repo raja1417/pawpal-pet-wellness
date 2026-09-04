@@ -1,18 +1,28 @@
+namespace: pawpal-dev
 api:
   replicaCount: 1
+  resources:
+    requests: { cpu: 50m, memory: 96Mi }
+    limits: { cpu: 250m, memory: 256Mi }
   autoscaling:
     enabled: false
 web:
   replicaCount: 1
+  resources:
+    requests: { cpu: 25m, memory: 32Mi }
+    limits: { cpu: 100m, memory: 128Mi }
   autoscaling:
     enabled: false
 ingress:
-  host: pawpal.local
+  host: pawpal-dev.example.com
   tls:
     enabled: false
 config:
-  corsOrigin: http://pawpal.local
+  nodeEnv: development
 postgresql:
   enabled: true
+  auth:
+    existingSecret: pawpal-dev-secrets
 secrets:
+  create: true
   existingSecret: pawpal-dev-secrets

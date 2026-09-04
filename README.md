@@ -74,11 +74,45 @@ All routes except health and auth require an `Authorization` header containing t
 
 ## Deployment
 
-- Production images: `server/Dockerfile` and `web/Dockerfile`
+- Private production images: `ghcr.io/raja1417/pawpal-api` and `ghcr.io/raja1417/pawpal-web`
 - Local stack: `docker-compose.yml`
-- Helm chart: `charts/pawpal` (optional bundled PostgreSQL or external database)
+- Helm chart: `charts/pawpal` (bundled PostgreSQL in dev, external RDS in production)
 - Standalone namespace/config examples: `k8s`
 - CI, image publication/security scanning, chart verification, CodeQL, and gated deployment: `.github/workflows`
+
+Images are published with `latest`, branch, commit SHA, and release semver tags. The shared build workflow scans the immutable image digest with Trivy. Keep both GHCR packages private and grant the cluster pull access through `imagePullSecrets`.
+
+### AWS infrastructure
+
+The `infrastructure` wrapper provisions a two-AZ VPC, EKS, managed PostgreSQL, private S3 storage, security groups, and an ALB using `raja1417/terraform-modules` release `v1.0.0`.
+
+Create the backend S3 bucket and DynamoDB lock table before the first run. Then initialize with an environment-specific key and apply the matching values:
+
+```bash
+terraform -chdir=infrastructure init \
+  -backend-config="bucket=pawpal-terraform-state" \
+  -backend-config="key=pawpal/dev/terraform.tfstate" \
+  -backend-config="region=us-east-1"
+terraform -chdir=infrastructure plan -var-file=dev.tfvars
+terraform -chdir=infrastructure apply
+```
+
+Use `prod.tfvars` and `pawpal/prod/terraform.tfstate` for production. RDS manages its master password in AWS Secrets Manager; create the `pawpal-prod-secrets` Kubernetes secret with `database-url` and `jwt-secret` keys before deployment.
+
+### Repository configuration
+
+Configure these repository variables:
+
+| Variable | Example |
+|---|---|
+| `PAWPAL_DEV_HOST` | `pawpal-dev.example.com` |
+| `PAWPAL_PROD_HOST` | `pawpal.example.com` |
+| `AWS_REGION` | `us-east-1` |
+| `TF_BACKEND_BUCKET` | `pawpal-terraform-state` |
+
+Configure `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `KUBECONFIG_DEV` in the `dev` environment. Configure the AWS credentials and `KUBECONFIG_PROD` in the `production` environment, and enable required reviewers there. The reusable callers require the `v1` release of `raja1417/github-actions-workflows`, and the Terraform wrapper requires the `v1.0.0` release of `raja1417/terraform-modules`.
+
+The API deployment runs `npx prisma migrate deploy` in an init container before each rollout. Development creates and preserves chart-managed credentials; production always consumes the pre-created secret.
 
 ## Screenshots
 

@@ -1,0 +1,23 @@
+name: Infrastructure security
+
+on:
+  pull_request:
+    paths:
+      - "infrastructure/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
+jobs:
+  tfsec:
+    uses: raja1417/github-actions-workflows/.github/workflows/tfsec-scan.yml@v1
+    with:
+      working-directory: infrastructure
+
+  checkov:
+    uses: raja1417/github-actions-workflows/.github/workflows/checkov-scan.yml@v1
+    with:
+      directory: infrastructure
+      framework: terraform
