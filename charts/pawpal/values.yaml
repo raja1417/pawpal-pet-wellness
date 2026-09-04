@@ -1,7 +1,8 @@
 nameOverride: ""
 fullnameOverride: ""
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: ghcr-pull-secret
 namespace: ""
 
 api:

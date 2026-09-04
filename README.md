@@ -80,7 +80,7 @@ All routes except health and auth require an `Authorization` header containing t
 - Standalone namespace/config examples: `k8s`
 - CI, image publication/security scanning, chart verification, CodeQL, and gated deployment: `.github/workflows`
 
-Images are published with `latest`, branch, commit SHA, and release semver tags. The shared build workflow scans the immutable image digest with Trivy. Keep both GHCR packages private and grant the cluster pull access through `imagePullSecrets`.
+Images are published with `latest`, branch, commit SHA, and release semver tags. The shared build workflow scans the immutable image digest with Trivy. Keep both GHCR packages private and create a `ghcr-pull-secret` Docker registry secret in each namespace before deploying.
 
 ### AWS infrastructure
 

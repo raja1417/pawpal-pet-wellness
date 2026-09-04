@@ -202,6 +202,7 @@ module "rds" {
   multi_az                        = var.environment == "prod"
   deletion_protection             = var.environment == "prod"
   skip_final_snapshot             = var.environment != "prod"
+  monitoring_interval             = 0
   performance_insights_enabled    = var.environment == "prod"
   enabled_cloudwatch_logs_exports = ["postgresql"]
   tags                            = local.common_tags
